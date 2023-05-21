@@ -1,0 +1,38 @@
+<html lang="en" xmlns="http://www.thymeleaf.org" th:replace="base::layout(~{::body})">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="login">
+        <div class="container">
+            <div th:if="${session.message}" class="alert alert-primary" role="alert" th:classappend="${session.message.type}">
+                <p th:text="${session.message.message}"></p>
+                <th:block th:text="${#session.removeAttribute('message')}"></th:block>
+            </div>
+            <div id="login-row" class="row justify-content-center align-items-center">
+                <div id="login-column" class="col-md-6">
+                    <div id="login-box" style="min-height: 0px;" class="col-md-12">
+                        
+                        <div class="alert alert-success mt-3" role="alert">
+                            OTP has been successfully sent to your email
+                          </div>
+
+                            <form method="post" th:action="@{/forgotPassword/verifyOTP}">
+                                <div class="form-group">
+                                    <input type="number" name="otp" placeholder="Enter OTP received " class="form-control">
+                                </div>
+                                <div class="container text-right">
+                                    <button class="btn btn-warning" type="submit">Verify OTP</button>
+                                </div>
+                            </form>
+                                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

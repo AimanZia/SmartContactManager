@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.thymeleaf.org" th:replace="user/userBase::layout(~{::body})">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title}">Document</title>
+</head>
+<body>
+    <h1 class="text-center" th:text="${title}">Add Contact</h1>
+    <div class="container-fluid mt-1" style="background-color:aliceblue">
+        <div class="row">
+            <div class="col-md-10 offset-md-1">
+                <form action="#" th:object="${conatct}"  method="POST" th:action="@{/user/addContact}"
+                class = mt-2 enctype="multipart/form-data" id="contactForm">
+                <input type="hidden" id="cid" name="cid" th:value="${contact.cid}" >
+                 <!-- Real Name -->
+                 <div class="input-group mt-4">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="fa fa-plus"></i></span>
+                    </div>
+                    <input type="text" id="realName" name="name" placeholder="Enter Name " th:value="${contact.name}" class="form-control">
+                 </div>
+                <!-- Nick Name -->
+                <div class="input-group mt-4" >
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="fa fa-user-alt"></i></span>
+                    </div>
+                    <input type="text" id="nickName" name="nickName" placeholder="Enter Nick Name " th:value="${contact.nickName}" class="form-control">
+                 </div>
+
+                 <!-- Phone field -->
+                <div class="input-group mt-4" >
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="fa fa-phone"></i></span>
+                    </div>
+                    <input type="number" id="phone" name="phone" placeholder="Enter Phone Number " th:value="${contact.phone}" class="form-control">
+                 </div>
+
+                 <!-- Email field -->
+                <div class="input-group mt-4" >
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">@</span>
+                    </div>
+                    <input type="email" id="email" name="email" placeholder="Enter Email Id " th:value="${contact.email}" class="form-control">
+                 </div>
+
+                 <!-- Work field -->
+                <div class="input-group mt-4" >
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="fa fa-briefcase"></i></span>
+                    </div>
+                    <input type="text" id="work" name="work" placeholder="Enter Work " th:value="${contact.work}" class="form-control">
+                 </div>
+
+                 <!-- Contact Description -->
+                 <div class="form-group mt-4">
+                    <textarea name="description" id="mytextarea" class="form-control" rows="20" th:text="${contact.description}" placeholder="Enter Contact Description"></textarea>
+                 </div>
+
+                 <div class="container p-3">
+                  <img th:src="@{'/img/'+${contact.imagePath}}" alt="" class="img-fluid img-thumbnail" style="width:50px;height: 50px;">
+                 </div>
+                 <!-- Contact-Image -->
+                <!-- <div class="input-group">
+                 <div class="custom-file"> -->
+                    <input type="file" id="contactSImage" name="contactImage" th:value="${contact.imagePath}">
+                    <!-- <label class="custom-file-label" for="contactSImage">Choose file</label> -->
+                  <!-- </div>
+                </div> -->
+
+                 <div class="container text-center">
+                    <button class="btn btn-outline-primary">Save Contact</button>
+                 </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+      var form = document.getElementById('contactForm');
+      var id= document.getElementById('cid').value;
+      console.log(id);
+      form.onsubmit = async (e) => {
+        e.preventDefault();
+        const form = e.currentTarget;
+        let url;
+        if(id==="0"){
+          url = form.action;
+        }
+        else{
+          url = `http://localhost:8282/user/updateContactP/${id}`;
+        }
+        try{
+          const formData = new FormData(form);
+          const response = await fetch(url,{
+              method : 'POST',
+              body : formData
+          });
+
+          console.log(response);
+          window.location = response.url;
+        }
+        catch(error){
+          console.error(error)
+        }
+        console.log(url);
+
+      }
+    </script>
+</body>
+
+</html>
