@@ -62,12 +62,12 @@
                   <img th:src="@{'/img/'+${contact.imagePath}}" alt="" class="img-fluid img-thumbnail" style="width:50px;height: 50px;">
                  </div>
                  <!-- Contact-Image -->
-                <!-- <div class="input-group">
-                 <div class="custom-file"> -->
-                    <input type="file" id="contactSImage" name="contactImage" th:value="${contact.imagePath}">
-                    <!-- <label class="custom-file-label" for="contactSImage">Choose file</label> -->
-                  <!-- </div>
-                </div> -->
+                 <div class="input-group">
+                 <div class="custom-file"> 
+                    <input type="file" id="contactSImage" name="contactImage" >
+                    <label class="custom-file-label" for="contactSImage">Choose file</label>
+                   </div>
+                </div> 
 
                  <div class="container text-center">
                     <button class="btn btn-outline-primary">Save Contact</button>

@@ -1,5 +1,8 @@
 body{
-    background-color: bisque;
+    background-image: url(../img/contactBackground.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    color: azure;
 }
 
 #login .container #login-row #login-column #login-box {
@@ -56,6 +59,7 @@ body{
     right: 35px;
     font-size: 36px;
     cursor: pointer;
+    color: grey;
    }
 
   /* css for content next to side bar */
@@ -89,4 +93,17 @@ body{
   border: 1px solid grey;
   z-index: 100;
   display: none;
+}
+
+.toggleSidebar{
+  cursor: pointer;
+}
+
+.contactPagination{
+  position: absolute;
+  bottom: 1rem;
+}
+
+.cardContent{
+  color: black;
 }

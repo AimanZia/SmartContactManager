@@ -1,0 +1,64 @@
+<html lang="en" xmlns="http://www.thymeleaf.org" th:replace="user/userBase::layout(~{::body})">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <div class="card mb-3 p-3 text-center cardContent" th:if="${user}" id="userProfile">
+        <img th:src="@{'/img/'+${user.imageUrl}}" class="card-img-fluid-top mx-auto d-block conatactProfileImage text-center" alt="profilePhoto"
+        onerror="this.onerror=null;this.src='/img/default.png';">
+        <div class="container text-center p-3">
+        <label for="profileImg">Change Profile</label>&nbsp;&nbsp;
+        <input type="file" id="profileImg" onchange="uploadAndPreviewImage(event)">
+        </div>
+        <div class="card-body">
+          <h5 class="card-title text-center"><span th:text="${user.name}"></span></h5>
+          <!-- <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p> -->
+          <!-- <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> -->
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item"><span th:text="${user.email}"></span></li>
+        </ul>
+        <div class="card-body">
+            <p class="card-text"><span th:text="${user.about}"></span></p>
+        </div>
+
+        <div class="container text-center">
+            <a href="#" class="btn btn-outline-secondary">Update</a>
+        </div>
+      </div>
+    <script type="text/javascript">
+        async function uploadAndPreviewImage(event)
+        {
+            console.log(event);
+            var file = event.target.files[0];
+            let formData = new FormData();
+            formData.append("profileImage",file);
+
+            let response = await fetch('/user/proFileImgUpload',{
+                method:'POST',
+                body:formData
+            });
+
+            if(response.status == 200)
+            {
+                $.ajax({
+                   url:'/user/profile',
+                   type:'GET',
+                   success:function(data){
+                       var response = $(data);
+                       $('#userProfile').html(response.find('#userProfile').html());
+                   },
+                   error:function(xhr,status,error)
+                   {
+                    console.error();
+                   }
+                });
+            }
+        }
+    </script>
+</body>
+</html>

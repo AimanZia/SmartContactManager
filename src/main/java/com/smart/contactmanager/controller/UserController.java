@@ -1,20 +1,26 @@
 package com.smart.contactmanager.controller;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.security.Principal;
 import java.util.Optional;
+
+import org.apache.tomcat.util.codec.binary.Base64;
+import org.aspectj.apache.bcel.util.ClassPath;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -124,8 +130,11 @@ public class UserController {
 
         model.addAttribute("title"," Add Contact");
         model.addAttribute("contacts", contactsByUser);
-        model.addAttribute("currentPage", page+1);
+        model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", contactsByUser.getTotalPages());
+
+        System.out.println(contactsByUser.getTotalPages());
+        System.out.println(page);
 
         System.out.println(contactsByUser);
       return "user/contacts";
@@ -177,8 +186,6 @@ public class UserController {
 
     @PostMapping("/changePassword")
     public String changePassword(@RequestParam("oldPass")  String oldPass, @RequestParam("newPass") String newPass,Principal principal){
-        System.out.println(newPass);
-        System.out.println(oldPass);
 
         String userName = principal.getName();
         User currentUser = this.userRepository.getUserByUsername(userName);
@@ -258,5 +265,45 @@ public class UserController {
             e.printStackTrace();
         }
         return "redirect:/user/Contacts";
+    }
+
+    @GetMapping("/profile")
+    public String viewUserProfile(Principal principal,ModelMap model)
+    {
+        String username = principal.getName();
+        User user = this.userRepository.getUserByUsername(username);
+
+        model.addAttribute("title", "User Dashboard");
+        model.addAttribute("user", user);
+
+        return "/user/userProfile";
+    }
+
+    @PostMapping("/proFileImgUpload")
+    public ResponseEntity<?> handleProfileImageUpload (@RequestParam("profileImage") MultipartFile imageFile,
+    Principal principal) throws IOException
+    {
+        String userEmail = principal.getName();
+        User user = this.userRepository.getUserByUsername(userEmail);
+
+        if(!imageFile.isEmpty())
+        {
+            File folder = new ClassPathResource("/static/img").getFile();
+            File deleteFile = new File(folder, user.getImageUrl());
+            deleteFile.delete();
+
+            
+
+            Path imagePath = Paths.get(folder.getAbsolutePath()+File.separator+imageFile.getOriginalFilename());
+
+            Files.copy(imageFile.getInputStream(),imagePath,StandardCopyOption.REPLACE_EXISTING);
+
+            System.out.println("Imaged Uploaded");
+            user.setImageUrl(imageFile.getOriginalFilename());
+
+            this.userRepository.save(user);
+        }
+
+        return ResponseEntity.ok("Image Uploded");
     }
 }

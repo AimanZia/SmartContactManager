@@ -7,7 +7,7 @@
 </head>
 <body>
 
-    <div class="card mb-3 p-3 text-center" th:if="${contactById}">
+    <div class="card mb-3 p-3 text-center cardContent" th:if="${contactById}">
         <img th:src="@{'/img/'+${contactById.imagePath}}" class="card-img-fluid-top mx-auto d-block conatactProfileImage text-center" alt="profilePhoto">
         <div class="card-body">
           <h5 class="card-title text-center"><span th:text="${contactById.name}"></span>   <span class="badge badge-pill badge-secondary" th:text="${contactById.nickName}"></span></h5>

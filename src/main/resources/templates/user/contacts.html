@@ -7,19 +7,20 @@
     <title th:text="${}">Document</title>
 </head>
 <body>
-    <h1 class="text-center my-3">All you Contacts</h1>
-
+  <h3 class="my-3" style="display: inline-block;">Saved Contacts</h1>
+  <div class="container">
     <!-- search -->
     <div class="search-container my-3">
-        <input type="text" onkeyup="search()"  id="searchInput" class="form-control" placeholder="Search your Contacts">
-
+      <div class="d-flex justify-content-center flex-nowrap">
+        <input type="text" onkeyup="search()"  id="searchInput" class="form-control w-50 p-3 text-center" placeholder="Search your Contacts">
+      </div>
         <div class="search-result">
           
         </div>
     </div>
 
-    <div class="container d-flex justify-content-around">
-    <div class="card" style="width: 25rem;" th:each="c : ${contacts}">
+    <div class="container d-flex justify-content-around" id="contactsArea">
+    <div class="card cardContent" style="width: 25rem;" th:each="c : ${contacts}">
         <img th:src="@{'/img/'+${c.imagePath}}" class="card-img-top conatactProfileImage" alt="profilePhoto">
         <div class="card-body">
           <h5 class="card-title" th:text="${c.name}">Conatct Details</h5>
@@ -36,16 +37,50 @@
     </div>
 
     <!-- pagination code here -->
+    
+    <div class="container d-flex justify-content-center flex-nowrap contactPagination cardContent" th:if="${totalPages !=0}">
     <nav aria-label="Page navigation example">
         <ul class="pagination">
 
-          <li class="page-item" th:if="${currentPage != 1}"><a class="page-link" href="#">Previous</a></li>
+          <li class="page-item" th:if="${currentPage != 0}"><a class="page-link" th:onclick="|pagination(${currentPage-1})|">Previous</a></li>
 
-          <li class="page-item" th:classappend="${currentPage==i?'active':''}" th:each="i : ${#numbers.sequence(1,totalPages)}"><a th:href="@{'/user/Contacts/'+${i-1}}" class="page-link" ><span th:text="${i}"></span></a></li>
+          <li class="page-item" th:classappend="${currentPage==i?'active':''}" th:each="i : ${#numbers.sequence(0,totalPages-1)}"><a  class="page-link" th:onclick="|pagination(${i})|"><span th:text="${i+1}"></span></a></li>
           
-          <li th:if="${currentPage != totalPages}"class="page-item"><a class="page-link" href="#">Next</a></li>
+          <li th:if="${currentPage != totalPages-1}"class="page-item"><a class="page-link" th:onclick="|pagination(${currentPage+1})|">Next</a></li>
         </ul>
     </nav>
+  </div>
+  </div>
+  <script type="text/javascript">
+    
+    $(document).ready(function(){
+
       
+      });
+
+      function pagination(x){
+        console.log(x);
+        // $('#contactsArea').html("<h1> This is inner html </h1>");
+        console.log('/user/Contacts/'+x);
+        $.ajax({
+            url:'/user/Contacts/'+x,
+            type:'GET',
+            success:function(data)
+            {
+              //  console.log(data);
+               var response = $(data);
+
+              //  console.log(response.find("#contactsArea").html());
+              //  console.log(response.find("#contactsArea").innerhtml());
+              $('#contactsArea').html(response.find("#contactsArea").html());
+
+            },
+            error:function(xhr,status,error)
+            {
+              console.log(error);
+            }
+        });
+      }
+  </script>
 </body>
 </html> 

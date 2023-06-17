@@ -8,6 +8,10 @@
 <body>
     <div id="login">
         <div class="container">
+            <div th:if="${session.message}" class="alert alert-primary alert-dismissible" role="alert" th:classappend="${session.message.type}">
+                <p th:text="${session.message.message}"></p>
+                <th:block th:text="${#session.removeAttribute('message')}"></th:block>
+            </div>
             <div id="login-row" class="row justify-content-center align-items-center">
                 <div id="login-column" class="col-md-6">
                     <div id="login-box" class="col-md-12">
