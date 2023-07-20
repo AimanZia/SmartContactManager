@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -77,5 +78,43 @@ public class HomeController {
     public String customSignIn(Model model){
       model.addAttribute("title", "Sign In - smart ");
       return "signin";
+    }
+
+    @GetMapping("/adminSignup")
+    public String adminRegisterPage(Model model)
+    {
+      model.addAttribute("title", "Register");
+      model.addAttribute("user", new User());
+      return "adminSignup";
+    }
+
+    @PostMapping("/adminSignup")
+    public String adminSignup(@ModelAttribute("user") User user , BindingResult result,@RequestParam(value = "acceptTandC",defaultValue = "false")
+    boolean agreement,ModelMap model, HttpSession session)
+    {
+      try {
+        if(!agreement)
+        {
+          throw new Exception("Accept Terms and Condition");
+        }
+        if(result.hasErrors())
+        {
+          model.addAttribute("user", user);
+          System.out.println(result.toString());
+          return "adminSignup";
+        }
+        user.setRole("ROLE_ADMIN");
+        user.setEnabled(true);
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        User savedUser = this.userRepository.save(user);
+        model.addAttribute("user", new User());
+        session.setAttribute("message", new Message("Sucess","alert-success"));
+        return "adminSignup";
+      } catch (Exception e) {
+        e.printStackTrace();
+        session.setAttribute("message", new Message("Something went Wrong"+e.getMessage() ,"alert-danger"));
+        return "adminSignup";
+      }
+      
     }
 }

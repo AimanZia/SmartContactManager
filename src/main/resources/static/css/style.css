@@ -52,6 +52,10 @@ body{
     background: grey;
     color: white;
    }
+   /* .active{
+    background: grey;
+    color: white;
+   } */
 
    .sidebar .crossBtn{
     position: absolute;
